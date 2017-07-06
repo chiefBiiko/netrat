@@ -28,7 +28,7 @@ init_ncat_server <- function(NCAT, host, port) {
                     stdout=TRUE, stderr=TRUE)
   ncatline <- grep('^\\s*ncat\\.exe', cmdout, value=TRUE)
   ncatlast <- ncatline[length(ncatline)]
-  NC_PID <- as.integer(sub('^.*ncat\\.exe\\s+(\\d+)\\s.+$', '\\1', ncatlast))
+  NC_PID <- as.integer(sub('^.*ncat\\.exe\\s+(\\d+)\\s+.*$', '\\1', ncatlast))
   return(list(NC_PID=NC_PID, RS_PID=RS_PID))
 }
 
