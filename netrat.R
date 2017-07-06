@@ -13,7 +13,7 @@ install_ncat <- function() {
   return(structure(NCATEXE, directory=NCATDIR))
 }
 
-# TODO: provide full path to Rscript.exe!
+# TODO: try going system2
 init_ncat_server <- function(NCAT, host, port) {
   stopifnot(grepl('win', .Platform$OS.type, TRUE), 
             grepl('^.+ncat\\.exe$', NCAT),
@@ -21,10 +21,14 @@ init_ncat_server <- function(NCAT, host, port) {
             is.numeric(port) && port %in% 0L:65535L)
   NCATSER <- file.path(attr(NCAT, 'directory'), 'ncat_server.R')
   NCATLOG <- file.path(getwd(), 'ncat_server.log')
+  RSCRIPT <- normalizePath(file.path(normalizePath(R.home()), 
+                                     'bin', 
+                                     'Rscript.exe'))
+  if (!file.exists(RSCRIPT)) stop('Rscript.exe not found')
   cat(sprintf('system2("%s", "%s %d -l -k -o %s")', 
               NCAT, host, port, NCATLOG), 
       file=NCATSER)
-  RS_PID <- as.integer(sys::exec_background('Rscript.exe', NCATSER))
+  RS_PID <- as.integer(sys::exec_background(RSCRIPT, NCATSER))
   Sys.sleep(3L)  # allow ncat to launch
   cmdout <- system2('cmd.exe', input='tasklist | findstr ncat.exe', 
                     stdout=TRUE, stderr=TRUE)
@@ -34,7 +38,7 @@ init_ncat_server <- function(NCAT, host, port) {
   return(list(NC_PID=NC_PID, RS_PID=RS_PID))
 }
 
-locate_ncat <- function() {
+locate_netrat_ncat <- function() {
   stopifnot(grepl('win', .Platform$OS.type, TRUE))
   EXE_PATH <- structure(file.path('C:', 
                                   'ncat-portable-5.59BETA1', 
