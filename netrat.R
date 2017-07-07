@@ -18,12 +18,10 @@ init_ncat_server <- function(NCAT, host, port) {
   stopifnot(grepl('win', .Platform$OS.type, TRUE), 
             grepl('^.+ncat\\.exe$', NCAT),
             grepl('[[:alnum:][:punct:]]+', host),
-            is.numeric(port) && port %in% 0L:65535L)
+            is.numeric(port) && port %in% 1024L:65535L)
   NCATSER <- file.path(attr(NCAT, 'directory'), 'ncat_server.R')
   NCATLOG <- file.path(getwd(), 'ncat_server.log')
-  RSCRIPT <- normalizePath(file.path(normalizePath(R.home()), 
-                                     'bin', 
-                                     'Rscript.exe'))
+  RSCRIPT <- normalizePath(file.path(R.home(), 'bin', 'Rscript.exe'))
   if (!file.exists(RSCRIPT)) stop('Rscript.exe not found')
   cat(sprintf('system2("%s", "%s %d -l -k -o %s")', 
               NCAT, host, port, NCATLOG), 
