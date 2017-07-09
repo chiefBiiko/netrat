@@ -7,9 +7,10 @@ install_ncat <- function() {
   NCATDIR <- file.path('C:', sub('^.+/([^/]+)\\.zip$', '\\1', URL))
   NCATEXE <- file.path(NCATDIR, 'ncat.exe')
   if (file.exists(NCATEXE)) return(structure(NCATEXE, directory=NCATDIR))
-  if (download.file(URL, DEST) != 0L) stop('Error downloading ncat @', 'URL')
+  if (download.file(URL, DEST) != 0L) stop('Error downloading ncat @\n', URL)
   message('Unzipped:', unzip(DEST, exdir=file.path('C:', '')))
-  if (unlink(DEST) != 0L) warning('Error deleting zip file', '\n', DEST)
+  if (unlink(DEST) != 0L) warning('Error deleting zip file @\n', DEST)
+  if (!file.exists(NCATEXE)) stop('oops...')
   return(structure(NCATEXE, directory=NCATDIR))
 }
 
@@ -21,7 +22,7 @@ init_ncat_server <- function(NCAT, host, port) {
   NCATSER <- file.path(attr(NCAT, 'directory'), 'ncat_server.R')
   NCATLOG <- file.path(getwd(), 'ncat_server.log')
   RSCRIPT <- normalizePath(file.path(R.home(), 'bin', 'Rscript.exe'))
-  if (!file.exists(RSCRIPT)) stop('Rscript.exe not found @', '\n', RSCRIPT)
+  if (!file.exists(RSCRIPT)) stop('Rscript.exe not found @\n', RSCRIPT)
   cat(sprintf('system2(\'%s\', \'%s %d -l -k -o "%s"\')', 
               NCAT, host, port, NCATLOG), 
       file=NCATSER)
