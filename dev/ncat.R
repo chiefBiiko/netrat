@@ -18,16 +18,16 @@ init_ncat_server <- function(NCAT, host, port) {
   stopifnot(grepl('win', .Platform$OS.type, TRUE), 
             grepl('^.+ncat\\.exe$', NCAT),
             grepl('[[:alnum:][:punct:]]+', host),
-            is.numeric(port) && port %in% 1024L:65535L)
-  NCATSER <- file.path(attr(NCAT, 'directory'), 'ncat_server.R')
-  NCATLOG <- file.path(getwd(), 'ncat_server.log')
+            port %in% 1024L:65535L)
+  NCAT_SER <- file.path(attr(NCAT, 'directory'), 'ncat_server.R')
+  NCAT_LOG <- file.path(getwd(), 'ncat_server.log')
   RSCRIPT <- normalizePath(file.path(R.home(), 'bin', 'Rscript.exe'))
   if (!file.exists(RSCRIPT)) stop('Rscript.exe not found @\n', RSCRIPT)
-  cat(sprintf('system2(\'%s\', \'%s %d -l -k -o "%s"\')', 
-              NCAT, host, port, NCATLOG), 
-      file=NCATSER)
+  cat(sprintf('system2(\'%s\', \'%s %d -l -o "%s"\')', 
+              NCAT, host, port, NCAT_LOG), 
+      file=NCAT_SER)
   message('Launching child processes...')
-  RS_PID <- as.integer(sys::exec_background(RSCRIPT, NCATSER))
+  RS_PID <- as.integer(sys::exec_background(RSCRIPT, NCAT_SER))
   Sys.sleep(3L)  # allow ncat to launch
   cmdout <- system2('cmd.exe', input='tasklist | findstr ncat.exe', 
                     stdout=TRUE, stderr=TRUE)
