@@ -18,7 +18,7 @@ install_ncat()
 
 # launch a ncat server that logs incoming messages to the R console 
 # and a ncat_server.log file in the current working directory
-PIDS <- init_ncat_server(locate_netrat_ncat(), 'localhost', 50000)
+PIDS <- init_ncat_server(locate_ncat(), 'localhost', 50000)
 
 # connect to the ncat server from a terminal window like this
 >C:\ncat-portable-5.59BETA1\ncat.exe localhost 50000

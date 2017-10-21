@@ -39,7 +39,7 @@ init_ncat_server <- function(NCAT, host, port) {
   return(list(NC_PID=NC_PID, RS_PID=RS_PID))
 }
 
-locate_netrat_ncat <- function() {
+locate_ncat <- function() {
   stopifnot(grepl('win', .Platform$OS.type, TRUE))
   EXE_PATH <- structure(file.path('C:', 
                                   'ncat-portable-5.59BETA1', 
